@@ -12,11 +12,11 @@ ENDCLASS.
 
 
 
-CLASS zcl_lab_14_grid_bama IMPLEMENTATION.
+CLASS ZCL_LAB_14_GRID_BAMA IMPLEMENTATION.
+
 
   METHOD constructor.
     super->constructor( iv_view_type = 'Grid view' ).
     me->box = iv_box.
   ENDMETHOD.
-
 ENDCLASS.

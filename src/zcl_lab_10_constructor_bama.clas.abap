@@ -11,18 +11,19 @@ class zcl_lab_10_constructor_bama definition
 
   protected section.
   private section.
-endclass.
+ENDCLASS.
 
 
 
-class zcl_lab_10_constructor_bama implementation.
+CLASS ZCL_LAB_10_CONSTRUCTOR_BAMA IMPLEMENTATION.
+
 
   method class_constructor.
     zcl_lab_10_constructor_bama=>log = |{ log } Static constructor-->|.
   endmethod.
 
+
   method constructor.
     zcl_lab_10_constructor_bama=>log = |{ log } Instance constructor-->|.
   endmethod.
-
-endclass.
+ENDCLASS.

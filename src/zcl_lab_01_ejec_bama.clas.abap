@@ -12,11 +12,42 @@ ENDCLASS.
 
 
 
-CLASS zcl_lab_01_ejec_bama IMPLEMENTATION.
+CLASS ZCL_LAB_01_EJEC_BAMA IMPLEMENTATION.
+
 
   METHOD if_oo_adt_classrun~main.
 
-    "4. Narrowing Cast
+     "10. Herencia con clase amiga
+    data(lo_collaborator) = new zcl_lab_25_collaborator_bama( ).
+    out->write( lo_collaborator->get_capital(  ) ).
+
+*    "9. Concepto Friends – Clase amiga
+*    DATA(lo_partner) = NEW zcl_lab_24_partner_bama(  ).
+*    out->write( lo_partner->get_company_capital(  ) ).
+
+*    "8. Encapsulación de instancias
+*    DATA(lo_classroom) = NEW zcl_lab_21_classroom_bama(  ).
+
+*    "5. Widening Cast
+*    DATA(lo_animal) = NEW zcl_lab_18_animal_bama(  ).
+*    DATA(lo_lion1) = NEW zcl_lab_19_lion_bama(  ).
+*    DATA(lo_lion2) = NEW zcl_lab_19_lion_bama(  ).
+*
+*    TRY.
+*        lo_animal = lo_lion1.
+*        lo_lion2 ?= lo_animal.
+*        out->write( lo_lion2->walk(  ) ).
+*
+*      CATCH cx_sy_move_cast_error INTO DATA(lx_error).
+*        out->write( lx_error->get_text(  ) ).
+*    ENDTRY.
+
+*    "4. Narrowing Cast
+*    DATA(lo_animal) = NEW zcl_lab_18_animal_bama(  ).
+*    DATA(lo_lion) = NEW zcl_lab_19_lion_bama(  ).
+*
+*    lo_animal = lo_lion.
+*    out->write( lo_animal->walk(  ) ).
 
 
 *    "3.Redefinición de métodos
@@ -106,5 +137,4 @@ CLASS zcl_lab_01_ejec_bama IMPLEMENTATION.
 *    out->write( lo_constructor->log ).
 
   ENDMETHOD.
-
 ENDCLASS.

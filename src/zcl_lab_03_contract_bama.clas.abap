@@ -19,10 +19,10 @@ ENDCLASS.
 
 
 
-CLASS zcl_lab_03_contract_bama IMPLEMENTATION.
+CLASS ZCL_LAB_03_CONTRACT_BAMA IMPLEMENTATION.
+
 
   METHOD set_creation_date.
     creation_date = iv_creation_date.
   ENDMETHOD.
-
 ENDCLASS.

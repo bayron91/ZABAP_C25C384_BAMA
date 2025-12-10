@@ -1,0 +1,22 @@
+CLASS zcl_lab_20_person_bama DEFINITION
+  PUBLIC
+*  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+  PROTECTED SECTION.
+    DATA name TYPE string.
+    METHODS set_name FINAL IMPORTING iv_name TYPE string.
+
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS ZCL_LAB_20_PERSON_BAMA IMPLEMENTATION.
+
+
+  METHOD set_name.
+    me->name = iv_name.
+  ENDMETHOD.
+ENDCLASS.

@@ -14,12 +14,12 @@ ENDCLASS.
 
 
 
-CLASS zcl_lab_15_flight_price_bama IMPLEMENTATION.
+CLASS ZCL_LAB_15_FLIGHT_PRICE_BAMA IMPLEMENTATION.
+
 
   METHOD add_price.
 
     APPEND is_flight TO me->mt_flights.
 
   ENDMETHOD.
-
 ENDCLASS.

@@ -13,7 +13,9 @@ CLASS zcl_lab_05_flight_bama DEFINITION
 ENDCLASS.
 
 
-CLASS zcl_lab_05_flight_bama IMPLEMENTATION.
+
+CLASS ZCL_LAB_05_FLIGHT_BAMA IMPLEMENTATION.
+
 
   METHOD get_flight_exists.
 
@@ -28,5 +30,4 @@ CLASS zcl_lab_05_flight_bama IMPLEMENTATION.
     ENDIF.
 
   ENDMETHOD.
-
 ENDCLASS.

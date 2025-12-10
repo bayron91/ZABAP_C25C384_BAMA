@@ -14,10 +14,10 @@ ENDCLASS.
 
 
 
-CLASS zcl_lab_11_system_bama IMPLEMENTATION.
+CLASS ZCL_LAB_11_SYSTEM_BAMA IMPLEMENTATION.
+
 
   METHOD get_architecture.
     rv_architecture = me->architecture.
   ENDMETHOD.
-
 ENDCLASS.

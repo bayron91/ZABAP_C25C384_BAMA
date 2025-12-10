@@ -12,7 +12,8 @@ ENDCLASS.
 
 
 
-CLASS zcl_lab_17_super_discount_bama IMPLEMENTATION.
+CLASS ZCL_LAB_17_SUPER_DISCOUNT_BAMA IMPLEMENTATION.
+
 
   METHOD add_price.
 
@@ -22,5 +23,4 @@ CLASS zcl_lab_17_super_discount_bama IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.
-
 ENDCLASS.

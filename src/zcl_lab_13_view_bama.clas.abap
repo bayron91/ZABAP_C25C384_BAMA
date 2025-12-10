@@ -16,18 +16,21 @@ CLASS zcl_lab_13_view_bama DEFINITION
 ENDCLASS.
 
 
-CLASS zcl_lab_13_view_bama IMPLEMENTATION.
+
+CLASS ZCL_LAB_13_VIEW_BAMA IMPLEMENTATION.
+
 
   METHOD constructor.
     me->view_type = iv_view_type.
   ENDMETHOD.
 
+
   METHOD get_view_type.
     rv_view_type = me->view_type.
   ENDMETHOD.
 
+
   METHOD get_box.
     rv_box = me->box.
   ENDMETHOD.
-
 ENDCLASS.

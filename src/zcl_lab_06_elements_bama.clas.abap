@@ -28,10 +28,10 @@ ENDCLASS.
 
 
 
-CLASS zcl_lab_06_elements_bama IMPLEMENTATION.
+CLASS ZCL_LAB_06_ELEMENTS_BAMA IMPLEMENTATION.
+
 
   METHOD set_object.
     ms_object = is_object.
   ENDMETHOD.
-
 ENDCLASS.

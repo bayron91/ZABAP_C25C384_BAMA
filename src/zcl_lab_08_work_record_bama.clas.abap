@@ -20,7 +20,8 @@ ENDCLASS.
 
 
 
-CLASS zcl_lab_08_work_record_bama IMPLEMENTATION.
+CLASS ZCL_LAB_08_WORK_RECORD_BAMA IMPLEMENTATION.
+
 
   METHOD open_new_record.
 
@@ -30,5 +31,4 @@ CLASS zcl_lab_08_work_record_bama IMPLEMENTATION.
     surname = iv_surname.
 
   ENDMETHOD.
-
 ENDCLASS.
