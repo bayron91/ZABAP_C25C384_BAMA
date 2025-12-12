@@ -30,9 +30,9 @@ CLASS zcl_data_gen_rap_bama IMPLEMENTATION.
                        lastchangedat AS local_last_changed_at
                  WHERE travel_id BETWEEN 1 AND 3000 ).
 
-    if sy-subrc eq 0.
-       out->write( |{ sy-dbcnt } rows inserted.....| ).
-    endif.
+    IF sy-subrc EQ 0.
+      out->write( |Customers .....{ sy-dbcnt } rows inserted.| ).
+    ENDIF.
 
   ENDMETHOD.
 
