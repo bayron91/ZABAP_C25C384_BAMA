@@ -15,9 +15,9 @@ define root view entity Z_R_CUSTOMER_TRAVEL_BAMA
       @Semantics.user.localInstanceLastChangedBy: true
       local_last_changed_by as LocalLastChangedBy,
       @Semantics.systemDateTime.localInstanceLastChangedAt: true
-      local_last_changed_at as LocalLastChangedAt,
+      local_last_changed_at as LocalLastChangedAt, //Local ETag
       @Semantics.systemDateTime.lastChangedAt: true
-      last_changed_at       as LastChangedAt,
+      last_changed_at       as LastChangedAt, //Total ETag
       // Make association public
       _customer
 }
