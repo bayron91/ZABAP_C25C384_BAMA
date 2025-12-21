@@ -1,0 +1,4 @@
+@EndUserText.label: 'Travel - Services definition'
+define service ZSD_CUSTOMER_TRAVEL_BAMA {
+  expose Z_C_CUSTOMER_TRAVEL_BAMA as CustomerTravel;
+}

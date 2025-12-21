@@ -1,7 +1,9 @@
-@AccessControl.authorizationCheck: #NOT_REQUIRED
+    @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Travel - Consumption entity'
 @Metadata.ignorePropagatedAnnotations: true
+
 @Search.searchable: true
+@Metadata.allowExtensions: true
 
 define root view entity Z_C_CUSTOMER_TRAVEL_BAMA
   provider contract transactional_query
