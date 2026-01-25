@@ -28,7 +28,7 @@ CLASS zcl_data_gen_rap_bama IMPLEMENTATION.
                        createdat AS local_created_at,
                        lastchangedby AS local_last_changed_by,
                        lastchangedat AS local_last_changed_at
-                 WHERE travel_id BETWEEN 1 AND 3000 ).
+                 WHERE travel_id BETWEEN 1 AND 1000 ).
 
     IF sy-subrc EQ 0.
       out->write( |Customers .....{ sy-dbcnt } rows inserted.| ).

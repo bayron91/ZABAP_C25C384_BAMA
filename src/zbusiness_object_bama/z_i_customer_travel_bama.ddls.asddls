@@ -6,10 +6,11 @@ define root view entity Z_I_CUSTOMER_TRAVEL_BAMA
   as projection on Z_R_CUSTOMER_TRAVEL_BAMA
 {
   key CustomerUUID,
-  key CustomerID,
-      //CustomerName,
+      CustomerID,
       Description,
-      //CountryName,
+      LocalCreatedBy,
+      LocalCreatedAt,
+      LocalLastChangedBy,
       @Semantics.systemDateTime.localInstanceLastChangedAt: true
       LocalLastChangedAt,
       @Semantics.systemDateTime.lastChangedAt: true

@@ -9,12 +9,6 @@
 }
 annotate entity Z_C_CUSTOMER_TRAVEL_BAMA with
 {
-  @UI.facet: [{ id: 'CustomerDetails',
-                purpose: #STANDARD,
-                type: #IDENTIFICATION_REFERENCE,
-                label: 'Customer Details',
-                position: 10 }]
-  CustomerUUID;
 
   @Consumption.valueHelpDefinition: [{ entity: { name: '/DMO/I_Customer_StdVH',
                                                  element: 'LastName' },
@@ -29,7 +23,7 @@ annotate entity Z_C_CUSTOMER_TRAVEL_BAMA with
                    { type: #FOR_ACTION,
                      dataAction: 'rejectCustomer',
                      label: 'Reject',
-                     position: 20 }],
+                     position: 10 }],
         selectionField: [{ position: 10 }],
         identification: [{ position: 10 },
                          { type: #FOR_ACTION,
@@ -39,30 +33,31 @@ annotate entity Z_C_CUSTOMER_TRAVEL_BAMA with
                          { type: #FOR_ACTION,
                            dataAction: 'rejectCustomer',
                            label: 'Reject',
-                           position: 20 }],
-        textArrangement: #TEXT_LAST
-  }
+                           position: 10 }],
+        textArrangement: #TEXT_LAST}
+  @UI.facet: [{ id: 'CustomerDetails',
+                purpose: #STANDARD,
+                type: #IDENTIFICATION_REFERENCE,
+                label: 'Customer Details',
+                 position: 10 }]
   CustomerID;
 
   @UI:{ lineItem: [{ position: 20,
                      importance: #HIGH,
                      label: 'Customer Name' }],
-        identification: [{ position: 20 }]
-  }
+        identification: [{ position: 20 }]}
   CustomerName;
 
   @UI:{ lineItem: [{ position: 30,
-                     importance: #HIGH,
+                     importance: #MEDIUM,
                      label: 'Customer Country' }],
-        identification: [{ position: 30 }]
-  }
+        identification: [{ position: 30 }]}
   CountryName;
 
   @UI:{ lineItem: [{ position: 40,
-                     importance: #HIGH,
+                     importance: #LOW,
                      label: 'Description' }],
-        identification: [{ position: 40 }],
-        hidden: true
-  }
+        identification: [{ position: 40 }]}
+  @UI.hidden: true
   Description;
 }

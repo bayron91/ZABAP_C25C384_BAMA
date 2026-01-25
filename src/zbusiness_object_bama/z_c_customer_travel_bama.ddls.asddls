@@ -1,7 +1,6 @@
-    @AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Travel - Consumption entity'
 @Metadata.ignorePropagatedAnnotations: true
-
 @Search.searchable: true
 @Metadata.allowExtensions: true
 
@@ -15,18 +14,17 @@ define root view entity Z_C_CUSTOMER_TRAVEL_BAMA
       @Search.fuzzinessThreshold: 0.8
       @Search.ranking: #HIGH
       @ObjectModel.text.element: [ 'CustomerName' ]
-  key CustomerID,
+      CustomerID,
       _customer.LastName                   as CustomerName,
-
-      Description,
-
       //localized, get language session user
       _customer._Country._Text.CountryName as CountryName : localized,
       //_customer._Country._Text[1: Language = $session.system_language ].CountryName as CountryName,
-
+      Description,
+      LocalCreatedBy,
+      LocalCreatedAt,
+      LocalLastChangedBy,
       @Semantics.systemDateTime.localInstanceLastChangedAt: true
       LocalLastChangedAt,
-
       @Semantics.systemDateTime.lastChangedAt: true
       LastChangedAt,
       /* Associations */
