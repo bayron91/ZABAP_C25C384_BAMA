@@ -1,0 +1,5 @@
+@EndUserText.label: 'Service definition for Incidents'
+define service ZSD_INCIDENT_BAM {
+  expose ZDD_C_INCIDENT_BAM   as Incidents;
+  expose ZDD_C_INCIDENT_H_BAM as History;
+}
