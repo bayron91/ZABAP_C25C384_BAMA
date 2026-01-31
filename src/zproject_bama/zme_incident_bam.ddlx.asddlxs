@@ -1,0 +1,7 @@
+@Metadata.layer: #CORE
+annotate entity ZDD_C_INCIDENT_BAM with
+
+{
+  @UI.hidden: true
+  IncUuid;
+}
