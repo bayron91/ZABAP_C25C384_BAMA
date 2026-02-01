@@ -30,6 +30,12 @@ define root view entity ZDD_C_INCIDENT_BAM
       CreationDate,
       ChangedDate,
 
+      @Semantics.user.createdBy: true
+      LocalCreatedBy,
+      @Semantics.systemDateTime.createdAt: true
+      LocalCreatedAt,
+      @Semantics.user.localInstanceLastChangedBy: true
+      LocalLastChangedBy,
       //Local Etag
       @Semantics.systemDateTime.localInstanceLastChangedAt: true
       LocalLastChangedAt,

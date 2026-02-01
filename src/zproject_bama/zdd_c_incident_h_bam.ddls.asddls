@@ -26,7 +26,13 @@ define view entity ZDD_C_INCIDENT_H_BAM
       _Status2.status_description as NewStatusDescription,
       
       Text,
-
+      
+      @Semantics.user.createdBy: true
+      LocalCreatedBy,
+      @Semantics.systemDateTime.createdAt: true
+      LocalCreatedAt,
+      @Semantics.user.localInstanceLastChangedBy: true
+      LocalLastChangedBy,
       //Local Etag
       @Semantics.systemDateTime.localInstanceLastChangedAt: true
       LocalLastChangedAt,

@@ -1,7 +1,73 @@
 @Metadata.layer: #CORE
+@UI:{ headerInfo:{ typeName: 'Incident',
+                   typeNamePlural: 'Incidents',
+                   title: { type: #STANDARD,
+                            value: 'IncidentId' }},
+                   presentationVariant: [{ sortOrder: [{ by: 'IncidentId',
+                                                         direction: #ASC }],
+                                           visualizations: [{ type: #AS_LINEITEM }]}]
+}
 annotate entity ZDD_C_INCIDENT_BAM with
-
 {
+  @UI.facet: [{ id: 'IncidentMasterData',
+                purpose: #STANDARD,
+                type: #IDENTIFICATION_REFERENCE,
+                label: 'Incident Master Data',
+                position: 10 }]
+  @UI: { lineItem: [{ importance: #HIGH },
+                    { type: #FOR_ACTION,
+                      dataAction: 'ChangeStatus',
+                      label: 'Change Status',
+                      position: 10 }],
+         identification: [{ type: #FOR_ACTION,
+                            dataAction: 'ChangeStatus',
+                            label: 'Change Status',
+                            position: 10  }]}
   @UI.hidden: true
   IncUuid;
+
+  @UI: { lineItem: [{ position: 10,
+                      importance: #MEDIUM,
+                      label: 'Incident ID' }],
+         selectionField: [{ position: 10 }],
+         identification: [{ position: 10 }]
+  }
+  IncidentId;
+
+  @UI: { lineItem: [{ position: 20,
+                      importance: #LOW }],
+         //selectionField: [{ position: 20 }],
+         identification: [{ position: 20 }]
+  }
+  Title;
+  
+  @UI: { lineItem: [{ position: 30,
+                      importance: #LOW,
+                      label: 'Incident Description' }],
+         selectionField: [{ position: 30 }],
+         identification: [{ position: 30 }]
+  }  
+  Description;
+  //Status;
+  //StatusDescription;
+  //Priority;
+  //PriorityDescription;
+  //CreationDate;
+  //ChangedDate;
+
+  @UI.hidden: true
+  LocalCreatedBy;
+  @UI.hidden: true
+  LocalCreatedAt;
+  @UI.hidden: true
+  LocalLastChangedBy;
+  @UI.hidden: true
+  LocalLastChangedAt;
+  @UI.hidden: true
+  LastChangedAt;
+
+  /* Associations */
+  //_History;
+  //_Priority;
+  //_Status;
 }

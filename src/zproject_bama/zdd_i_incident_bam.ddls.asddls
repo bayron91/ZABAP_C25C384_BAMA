@@ -14,6 +14,12 @@ define root view entity ZDD_I_INCIDENT_BAM
       Priority,
       CreationDate,
       ChangedDate,
+      @Semantics.user.createdBy: true
+      LocalCreatedBy,
+      @Semantics.systemDateTime.createdAt: true
+      LocalCreatedAt,
+      @Semantics.user.localInstanceLastChangedBy: true
+      LocalLastChangedBy,
       //Local Etag
       @Semantics.systemDateTime.localInstanceLastChangedAt: true
       LocalLastChangedAt,
