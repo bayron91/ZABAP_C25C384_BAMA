@@ -36,38 +36,68 @@ annotate entity ZDD_C_INCIDENT_BAM with
 
   @UI: { lineItem: [{ position: 20,
                       importance: #LOW }],
-         //selectionField: [{ position: 20 }],
          identification: [{ position: 20 }]
   }
   Title;
-  
+
   @UI: { lineItem: [{ position: 30,
                       importance: #LOW,
                       label: 'Incident Description' }],
          selectionField: [{ position: 30 }],
          identification: [{ position: 30 }]
-  }  
+  }
   Description;
-  //Status;
-  //StatusDescription;
-  //Priority;
-  //PriorityDescription;
-  //CreationDate;
-  //ChangedDate;
+  
+  @Consumption.valueHelpDefinition: [{ entity: { name: 'ZDD_STATUS_VH',
+                                                 element: 'StatusCode' },
+                                       useForValidation: true }]
+  @UI: { lineItem: [{ position: 40,
+                    importance: #LOW }],
+       selectionField: [{ position: 40 }],
+       identification: [{ position: 40 }]
+  }
+  Status;
+
+  @UI.hidden: true
+  StatusDescription;
+
+  @Consumption.valueHelpDefinition: [{ entity: { name: 'ZDD_PRIORITY_VH',
+                                                 element: 'PriorityCode' },
+                                       useForValidation: true }]
+  @UI: { lineItem: [{ position: 50,
+                  importance: #LOW }],
+     selectionField: [{ position: 50 }],
+     identification: [{ position: 50 }]
+  }
+  Priority;
+
+  @UI.hidden: true
+  PriorityDescription;
+
+  @UI: { lineItem: [{ position: 60,
+                  importance: #LOW }],
+     identification: [{ position: 60 }]
+  }
+  CreationDate;
+
+  @UI: { lineItem: [{ position: 70,
+                importance: #LOW }],
+   identification: [{ position: 70 }]
+  }
+  ChangedDate;
 
   @UI.hidden: true
   LocalCreatedBy;
+  
   @UI.hidden: true
   LocalCreatedAt;
+  
   @UI.hidden: true
   LocalLastChangedBy;
+  
   @UI.hidden: true
   LocalLastChangedAt;
+  
   @UI.hidden: true
   LastChangedAt;
-
-  /* Associations */
-  //_History;
-  //_Priority;
-  //_Status;
 }

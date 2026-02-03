@@ -3,10 +3,6 @@
 @Metadata.ignorePropagatedAnnotations: true
 @ObjectModel.dataCategory: #VALUE_HELP
 @ObjectModel.representativeKey: 'StatusCode'
-//@ObjectModel.usageType.serviceQuality: #A
-//@ObjectModel.usageType.sizeCategory: #S
-//@ObjectModel.usageType.dataClass: #CUSTOMIZING
-//@VDM.viewType: #COMPOSITE
 @Search.searchable: true
 define view entity ZDD_STATUS_VH
   as select from zdt_status_bam
