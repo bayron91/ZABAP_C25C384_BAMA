@@ -47,7 +47,7 @@ annotate entity ZDD_C_INCIDENT_BAM with
          identification: [{ position: 30 }]
   }
   Description;
-  
+
   @Consumption.valueHelpDefinition: [{ entity: { name: 'ZDD_STATUS_VH',
                                                  element: 'StatusCode' },
                                        useForValidation: true }]
@@ -76,28 +76,36 @@ annotate entity ZDD_C_INCIDENT_BAM with
 
   @UI: { lineItem: [{ position: 60,
                   importance: #LOW }],
+     selectionField: [{ position: 60 }],
      identification: [{ position: 60 }]
   }
+  @Consumption.filter: { selectionType: #INTERVAL,
+                         defaultValue: 'TODAY..TODAY' }
   CreationDate;
 
   @UI: { lineItem: [{ position: 70,
                 importance: #LOW }],
+   selectionField: [{ position: 70 }],
    identification: [{ position: 70 }]
   }
   ChangedDate;
 
   @UI.hidden: true
   LocalCreatedBy;
-  
   @UI.hidden: true
   LocalCreatedAt;
-  
   @UI.hidden: true
   LocalLastChangedBy;
-  
   @UI.hidden: true
   LocalLastChangedAt;
-  
   @UI.hidden: true
   LastChangedAt;
+
+  /* Associations */
+  @UI.hidden: true
+  _History;
+  @UI.hidden: true
+  _Priority;
+  @UI.hidden: true
+  _Status;
 }

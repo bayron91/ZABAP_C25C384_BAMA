@@ -1,10 +1,79 @@
 @Metadata.layer: #CORE
+
+@UI:{ headerInfo: { typeName: 'History',
+                    typeNamePlural: 'Histories',
+                    title: { type: #STANDARD,
+                             value: 'HisId' }},
+      presentationVariant: [{ sortOrder: [{ by: 'HisId',
+                                            direction: #ASC  }],
+                              visualizations: [{ type: #AS_LINEITEM }]}],
+      createHidden: true //operación de creación
+}
 annotate entity ZDD_C_INCIDENT_H_BAM with
 
 {
+  @UI.facet: [{ id: 'IncidentHistoryData',
+                purpose: #STANDARD,
+                type: #LINEITEM_REFERENCE,
+                label: 'History of Incident',
+                position: 10 }]
+  @UI: { lineItem: [{ importance: #HIGH },
+                    { type: #FOR_ACTION,
+                      dataAction: 'ChangeStatus',
+                      label: 'Change Status',
+                      position: 10 }]}
   @UI.hidden: true
   HisUuid;
+  
   @UI.hidden: true
   IncUuid;
 
+  @UI: { lineItem: [{ position: 10,
+                      importance: #MEDIUM,
+                      label: 'History ID' }],
+         identification: [{ position: 10 }]}
+  HisId;
+
+  @UI: { lineItem: [{ position: 20,
+                    importance: #MEDIUM,
+                    label: 'Previous Status' }],
+       identification: [{ position: 20 }]}
+  PreviousStatus;
+
+  @UI.hidden: true
+  PreviousStatusDescription;
+
+  @UI: { lineItem: [{ position: 30,
+                      importance: #MEDIUM,
+                      label: 'New Status' }],
+         identification: [{ position: 30 }]}
+  NewStatus;
+
+  @UI.hidden: true
+  NewStatusDescription;
+
+  @UI: { lineItem: [{ position: 40,
+                    importance: #MEDIUM,
+                    label: 'Observation' }],
+       identification: [{ position: 40 }]}
+  Text;
+
+  @UI.hidden: true
+  LocalCreatedBy;
+  @UI.hidden: true
+  LocalCreatedAt;
+  @UI.hidden: true
+  LocalLastChangedBy;
+  @UI.hidden: true
+  LocalLastChangedAt;
+  @UI.hidden: true
+  LastChangedAt;
+
+  /* Associations */
+  @UI.hidden: true
+  _Incident;
+  @UI.hidden: true
+  _Status1;
+  @UI.hidden: true
+  _Status2;
 }

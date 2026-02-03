@@ -26,7 +26,7 @@ define root view entity ZDD_C_INCIDENT_BAM
       @ObjectModel.text.element: [ 'PriorityDescription' ]
       Priority,
       _Priority.priority_description as PriorityDescription,
-
+      
       CreationDate,
       ChangedDate,
 
