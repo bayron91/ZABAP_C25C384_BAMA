@@ -1,0 +1,27 @@
+managed implementation in class zbp_dd_r_incident_bam unique;
+strict ( 2 );
+
+define behavior for ZDD_R_INCIDENT_BAM alias Incident
+persistent table zdt_inct_bam
+lock master
+authorization master ( instance )
+//etag master <field_name>
+{
+  create ( authorization : global );
+  update;
+  delete;
+  field ( readonly ) IncUuid;
+  association _History { create; }
+}
+
+define behavior for ZDD_INCIDENT_H_BAM alias History
+persistent table zdt_inct_h_bam
+lock dependent by _Incident
+authorization dependent by _Incident
+//etag master <field_name>
+{
+  update;
+  delete;
+  field ( readonly ) HisUuid, IncUuid;
+  association _Incident;
+}
