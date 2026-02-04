@@ -30,7 +30,7 @@ define root view entity ZDD_R_INCIDENT_BAM
       //Total Etag
       @Semantics.systemDateTime.lastChangedAt: true
       last_changed_at       as LastChangedAt,
-      
+
       // Make association public
       _History,
       _Priority,
