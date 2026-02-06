@@ -1,27 +1,131 @@
 managed implementation in class zbp_dd_r_incident_bam unique;
 strict ( 2 );
+with draft;
 
 define behavior for ZDD_R_INCIDENT_BAM alias Incident
 persistent table zdt_inct_bam
+draft table zdt_inct_d_bam
 lock master
-authorization master ( instance )
-//etag master <field_name>
+total etag LastChangedAt
+etag master LocalLastChangedAt
+authorization master ( global, instance )
 {
-  create ( authorization : global );
+  create;
   update;
   delete;
-  field ( readonly ) IncUuid;
-  association _History { create; }
+
+  //Composición del historial con posibilidad de crear línea
+  association _History { create; with draft; }
+
+  //Campos de solo lectura y autoincremental
+  field ( numbering : managed, readonly ) IncUuid;
+  field ( readonly ) IncidentId,
+  //Status,
+  ChangedDate,
+  LocalCreatedBy,
+  LocalCreatedAt,
+  LocalLastChangedBy,
+  LocalLastChangedAt,
+  LastChangedAt;
+
+  field ( features : instance ) Status;
+
+  //Campos obligatorios
+  field ( mandatory ) Title, Description, Priority;
+
+  //definición accion botón status
+  action ( features : instance, authorization : update ) ChangeStatus
+    parameter ZAE_STATUS_BAM result [1] $self;
+
+  //insertar en la tabla de historial el cambio de estatus
+  internal action ChangeStatusHistory;
+
+  //Validación de campos al momento de crear/actualizar un registro
+  validation ValidateStatus on save { create; field Status; }
+  validation ValidatePriority on save { create; field Priority; }
+  validation ValidateDateRange on save { create; field CreationDate, ChangedDate; }
+
+  determination setIncidentID on save { create; }
+  determination setStatusToOpen on modify { create; } //values default
+  determination calculateStatus on modify { create; field Status; }
+
+  determine action validateStatusCode { validation ValidateStatus; }
+  determine action validatePriorityCode { validation ValidatePriority; }
+  determine action validateDates { validation ValidateDateRange; }
+
+  side effects
+  {
+    field Status affects field _History.NewStatus;
+    determine action validateStatusCode executed on field Status affects messages;
+    determine action validatePriorityCode executed on field Priority affects messages;
+    determine action validateDates executed on field CreationDate, field ChangedDate affects messages;
+  }
+
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Edit;
+  draft action Resume;
+
+  draft determine action Prepare
+  {
+    validation ValidateStatus;
+    validation ValidatePriority;
+    validation ValidateDateRange;
+  }
+
+  mapping for zdt_inct_bam
+    {
+      IncUuid            = inc_uuid;
+      IncidentId         = incident_id;
+      Title              = title;
+      Description        = description;
+      Status             = status;
+      Priority           = priority;
+      CreationDate       = creation_date;
+      ChangedDate        = changed_date;
+      LocalCreatedBy     = local_created_by;
+      LocalCreatedAt     = local_created_at;
+      LocalLastChangedBy = local_last_changed_by;
+      LocalLastChangedAt = local_last_changed_at;
+      LastChangedAt      = last_changed_at;
+    }
+
 }
+
 
 define behavior for ZDD_INCIDENT_H_BAM alias History
 persistent table zdt_inct_h_bam
+draft table zdt_inct_h_d_bam
 lock dependent by _Incident
+etag master LocalLastChangedAt
 authorization dependent by _Incident
-//etag master <field_name>
 {
   update;
   delete;
-  field ( readonly ) HisUuid, IncUuid;
-  association _Incident;
+
+  association _Incident { with draft; }
+
+  field ( numbering : managed, readonly ) HisUuid;
+
+  field ( readonly ) IncUuid,
+  LocalCreatedBy,
+  LocalCreatedAt,
+  LocalLastChangedBy,
+  LocalLastChangedAt,
+  LastChangedAt;
+
+  mapping for zdt_inct_h_bam
+    {
+      HisUuid            = his_uuid;
+      IncUuid            = inc_uuid;
+      HisId              = his_id;
+      PreviousStatus     = previous_status;
+      NewStatus          = new_status;
+      Text               = text;
+      LocalCreatedBy     = local_created_by;
+      LocalCreatedAt     = local_created_at;
+      LocalLastChangedBy = local_last_changed_by;
+      LocalLastChangedAt = local_last_changed_at;
+      LastChangedAt      = last_changed_at;
+    }
 }

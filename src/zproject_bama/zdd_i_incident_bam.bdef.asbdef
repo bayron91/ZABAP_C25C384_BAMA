@@ -1,0 +1,30 @@
+interface;
+use draft;
+
+define behavior for ZDD_I_INCIDENT_BAM alias Incident
+{
+  use create;
+  use update;
+  use delete;
+
+  use action ChangeStatus;
+  use action validateStatusCode;
+  use action validatePriorityCode;
+  use action validateDates;
+
+  use action Activate;
+  use action Discard;
+  use action Edit;
+  use action Resume;
+  use action Prepare;
+
+  use association _History { create; with draft; }
+}
+
+define behavior for ZDD_I_INCIDENT_H_BAM alias History
+{
+  use update;
+  use delete;
+
+  use association _Incident { with draft; }
+}

@@ -4,8 +4,8 @@ define abstract entity ZAE_STATUS_BAM
   @Consumption.valueHelpDefinition: [{ entity: { name: 'ZDD_STATUS_VH',
                                                  element: 'StatusCode' },
                                        useForValidation: true }]
-  @ObjectModel.text.element: [ 'StatusDescription' ]
-  StatusCode        : zde_status_bam;
-  @Semantics.text: true
-  StatusDescription : abap.char(40);
+  @EndUserText.label: 'Change Status'
+  StatusCode  : zde_status_bam;
+  @EndUserText.label: 'Observation Text'
+  Observation : abap.char(80);
 }

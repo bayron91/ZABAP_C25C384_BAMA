@@ -1,0 +1,5 @@
+CLASS zbp_dd_r_incident_bam DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF zdd_r_incident_bam.
+ENDCLASS.
+
+CLASS zbp_dd_r_incident_bam IMPLEMENTATION.
+ENDCLASS.

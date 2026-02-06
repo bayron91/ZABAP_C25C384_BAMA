@@ -35,7 +35,8 @@ annotate entity ZDD_C_INCIDENT_BAM with
   IncidentId;
 
   @UI: { lineItem: [{ position: 20,
-                      importance: #LOW }],
+                      importance: #LOW,
+                      label: 'Title' }],
          identification: [{ position: 20 }]
   }
   Title;
@@ -75,7 +76,8 @@ annotate entity ZDD_C_INCIDENT_BAM with
   PriorityDescription;
 
   @UI: { lineItem: [{ position: 60,
-                  importance: #LOW }],
+                      importance: #LOW,
+                      label: 'Creation Date' }],
      selectionField: [{ position: 60 }],
      identification: [{ position: 60 }]
   }
@@ -84,7 +86,8 @@ annotate entity ZDD_C_INCIDENT_BAM with
   CreationDate;
 
   @UI: { lineItem: [{ position: 70,
-                importance: #LOW }],
+                      importance: #LOW,
+                      label: 'Change Date' }],
    selectionField: [{ position: 70 }],
    identification: [{ position: 70 }]
   }
