@@ -6,7 +6,7 @@ define view entity ZDD_I_INCIDENT_H_BAM
 
 {
   key HisUuid,
-  key IncUuid,
+      IncUuid,
       HisId,
       PreviousStatus,
       NewStatus,

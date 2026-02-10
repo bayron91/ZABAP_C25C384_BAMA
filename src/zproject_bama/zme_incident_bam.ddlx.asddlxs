@@ -30,22 +30,25 @@ annotate entity ZDD_C_INCIDENT_BAM with
                       importance: #MEDIUM,
                       label: 'Incident ID' }],
          selectionField: [{ position: 10 }],
-         identification: [{ position: 10 }]
+         identification: [{ position: 10,
+                            label: 'Incident ID' }]
   }
   IncidentId;
 
   @UI: { lineItem: [{ position: 20,
                       importance: #LOW,
                       label: 'Title' }],
-         identification: [{ position: 20 }]
+         identification: [{ position: 20,
+                            label: 'Title' }]
   }
   Title;
 
   @UI: { lineItem: [{ position: 30,
                       importance: #LOW,
-                      label: 'Incident Description' }],
+                      label: 'Description' }],
          selectionField: [{ position: 30 }],
-         identification: [{ position: 30 }]
+         identification: [{ position: 30,
+                            label: 'Description' }]
   }
   Description;
 
@@ -79,18 +82,22 @@ annotate entity ZDD_C_INCIDENT_BAM with
                       importance: #LOW,
                       label: 'Creation Date' }],
      selectionField: [{ position: 60 }],
-     identification: [{ position: 60 }]
+     identification: [{ position: 60,
+                        label: 'Creation Date' }]
   }
-  @Consumption.filter: { selectionType: #INTERVAL,
-                         defaultValue: 'TODAY..TODAY' }
+  @Consumption.filter: { selectionType: #SINGLE,
+                         defaultValue: 'TODAY' }
   CreationDate;
 
   @UI: { lineItem: [{ position: 70,
                       importance: #LOW,
                       label: 'Change Date' }],
    selectionField: [{ position: 70 }],
-   identification: [{ position: 70 }]
+   identification: [{ position: 70,
+                      label: 'Change Date' }]
   }
+  @Consumption.filter: { selectionType: #SINGLE,
+                         defaultValue: 'TODAY' }
   ChangedDate;
 
   @UI.hidden: true

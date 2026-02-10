@@ -7,17 +7,18 @@
     sizeCategory: #S,
     dataClass: #MIXED
 }
+
 define view entity ZDD_INCIDENT_H_BAM
   as select from zdt_inct_h_bam
 
   association        to parent ZDD_R_INCIDENT_BAM as _Incident on _Incident.IncUuid = $projection.IncUuid
 
-  association [1..1] to zdt_status_bam            as _Status1  on _Status1.status_code = $projection.PreviousStatus
-  association [1..1] to zdt_status_bam            as _Status2  on _Status2.status_code = $projection.NewStatus
+  association [0..1] to zdt_status_bam            as _Status1  on _Status1.status_code = $projection.PreviousStatus
+  association [0..1] to zdt_status_bam            as _Status2  on _Status2.status_code = $projection.NewStatus
 
 {
   key his_uuid              as HisUuid,
-  key inc_uuid              as IncUuid,
+      inc_uuid              as IncUuid,
       his_id                as HisId,
       previous_status       as PreviousStatus,
       new_status            as NewStatus,
@@ -34,7 +35,7 @@ define view entity ZDD_INCIDENT_H_BAM
       //Total Etag
       @Semantics.systemDateTime.lastChangedAt: true
       last_changed_at       as LastChangedAt,
-      
+
       // Make association public
       _Incident,
       _Status1,

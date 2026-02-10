@@ -1,13 +1,20 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Root view entity - Incidents'
 @Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+
 define root view entity ZDD_R_INCIDENT_BAM
   as select from zdt_inct_bam
 
   composition [0..*] of ZDD_INCIDENT_H_BAM as _History
 
-  association [1..1] to zdt_status_bam     as _Status   on _Status.status_code = $projection.Status
-  association [1..1] to zdt_priority_bam   as _Priority on _Priority.priority_code = $projection.Priority
+  association [0..1] to zdt_status_bam     as _Status   on _Status.status_code = $projection.Status
+  association [0..1] to zdt_priority_bam   as _Priority on _Priority.priority_code = $projection.Priority
 
 {
   key inc_uuid              as IncUuid,

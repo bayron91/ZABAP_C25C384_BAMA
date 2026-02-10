@@ -16,17 +16,17 @@ define root view entity ZDD_C_INCIDENT_BAM
       @Search.defaultSearchElement: true
       @Search.fuzzinessThreshold: 0.8
       @Search.ranking: #MEDIUM
-      @ObjectModel.text.element: [ 'StatusDescription' ]
+      @ObjectModel.text.element: ['StatusDescription']
       Status,
       _Status.status_description     as StatusDescription,
 
       @Search.defaultSearchElement: true
       @Search.fuzzinessThreshold: 0.8
       @Search.ranking: #MEDIUM
-      @ObjectModel.text.element: [ 'PriorityDescription' ]
+      @ObjectModel.text.element: ['PriorityDescription']
       Priority,
       _Priority.priority_description as PriorityDescription,
-      
+
       CreationDate,
       ChangedDate,
 

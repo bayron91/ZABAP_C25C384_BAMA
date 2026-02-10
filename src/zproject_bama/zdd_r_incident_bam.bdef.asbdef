@@ -13,7 +13,6 @@ authorization master ( global, instance )
   create;
   update;
   delete;
-
   //Composición del historial con posibilidad de crear línea
   association _History { create; with draft; }
 
@@ -22,13 +21,11 @@ authorization master ( global, instance )
   field ( readonly ) IncidentId,
   //Status,
   ChangedDate,
-  LocalCreatedBy,
   LocalCreatedAt,
+  LocalCreatedBy,
   LocalLastChangedBy,
   LocalLastChangedAt,
   LastChangedAt;
-
-  field ( features : instance ) Status;
 
   //Campos obligatorios
   field ( mandatory ) Title, Description, Priority;
@@ -40,26 +37,28 @@ authorization master ( global, instance )
   //insertar en la tabla de historial el cambio de estatus
   internal action ChangeStatusHistory;
 
-  //Validación de campos al momento de crear/actualizar un registro
-  validation ValidateStatus on save { create; field Status; }
-  validation ValidatePriority on save { create; field Priority; }
-  validation ValidateDateRange on save { create; field CreationDate, ChangedDate; }
+  //  //Validación de campos al momento de crear/actualizar un registro
+  //  validation ValidateStatus on save { create; field Status; }
+  //  validation ValidatePriority on save { create; field Priority; }
+  //  validation ValidateDateRange on save { create; field CreationDate, ChangedDate; }
 
-  determination setIncidentID on save { create; }
-  determination setStatusToOpen on modify { create; } //values default
-  determination calculateStatus on modify { create; field Status; }
+  //  determination setIncidentID on save { create; }
+  //  determination setStatusToOpen on modify { create; } //values default
+  //  determination calculateStatus on modify { create; field Status; }
 
-  determine action validateStatusCode { validation ValidateStatus; }
-  determine action validatePriorityCode { validation ValidatePriority; }
-  determine action validateDates { validation ValidateDateRange; }
+  determination setInitialValues on modify { create; }
 
-  side effects
-  {
-    field Status affects field _History.NewStatus;
-    determine action validateStatusCode executed on field Status affects messages;
-    determine action validatePriorityCode executed on field Priority affects messages;
-    determine action validateDates executed on field CreationDate, field ChangedDate affects messages;
-  }
+  //  determine action validateStatusCode { validation ValidateStatus; }
+  //  determine action validatePriorityCode { validation ValidatePriority; }
+  //  determine action validateDates { validation ValidateDateRange; }
+
+  //  side effects
+  //  {
+  //    field Status affects field _History.NewStatus;
+  //    determine action validateStatusCode executed on field Status affects messages;
+  //    determine action validatePriorityCode executed on field Priority affects messages;
+  //    determine action validateDates executed on field CreationDate, field ChangedDate affects messages;
+  //  }
 
   draft action Activate optimized;
   draft action Discard;
@@ -68,9 +67,9 @@ authorization master ( global, instance )
 
   draft determine action Prepare
   {
-    validation ValidateStatus;
-    validation ValidatePriority;
-    validation ValidateDateRange;
+    //    validation ValidateStatus;
+    //    validation ValidatePriority;
+    //    validation ValidateDateRange;
   }
 
   mapping for zdt_inct_bam
@@ -89,7 +88,6 @@ authorization master ( global, instance )
       LocalLastChangedAt = local_last_changed_at;
       LastChangedAt      = last_changed_at;
     }
-
 }
 
 
@@ -102,7 +100,6 @@ authorization dependent by _Incident
 {
   update;
   delete;
-
   association _Incident { with draft; }
 
   field ( numbering : managed, readonly ) HisUuid;

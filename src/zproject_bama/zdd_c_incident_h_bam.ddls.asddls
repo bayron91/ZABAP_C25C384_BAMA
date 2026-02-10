@@ -8,20 +8,20 @@ define view entity ZDD_C_INCIDENT_H_BAM
 
 {
   key HisUuid,
-  key IncUuid,
+      IncUuid,
       HisId,
 
       @Search.defaultSearchElement: true
       @Search.fuzzinessThreshold: 0.8
       @Search.ranking: #MEDIUM
-      @ObjectModel.text.element: [ 'PreviousStatusDescription' ]
+      @ObjectModel.text.element: ['PreviousStatusDescription']
       PreviousStatus,
       _Status1.status_description as PreviousStatusDescription,
 
       @Search.defaultSearchElement: true
       @Search.fuzzinessThreshold: 0.8
       @Search.ranking: #MEDIUM
-      @ObjectModel.text.element: [ 'NewStatusDescription' ]
+      @ObjectModel.text.element: ['NewStatusDescription']
       NewStatus,
       _Status2.status_description as NewStatusDescription,
       
