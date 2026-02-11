@@ -13,11 +13,20 @@ CLASS lhc_Incident DEFINITION INHERITING FROM cl_abap_behavior_handler.
     METHODS ChangeStatus FOR MODIFY
       IMPORTING keys FOR ACTION Incident~ChangeStatus RESULT result.
 
-    METHODS ChangeStatusHistory FOR MODIFY
-      IMPORTING keys FOR ACTION Incident~ChangeStatusHistory.
-
     METHODS setInitialValues FOR DETERMINE ON MODIFY
       IMPORTING keys FOR Incident~setInitialValues.
+
+    METHODS setInitialHistory FOR DETERMINE ON SAVE
+      IMPORTING keys FOR Incident~setInitialHistory.
+
+    METHODS validate_dates FOR VALIDATE ON SAVE
+      IMPORTING keys FOR Incident~validate_dates.
+
+    METHODS validate_mandatory FOR VALIDATE ON SAVE
+      IMPORTING keys FOR Incident~validate_mandatory.
+
+    METHODS validate_status_change FOR VALIDATE ON SAVE
+      IMPORTING keys FOR Incident~validate_status_change.
 
 ENDCLASS.
 
@@ -35,10 +44,19 @@ CLASS lhc_Incident IMPLEMENTATION.
   METHOD ChangeStatus.
   ENDMETHOD.
 
-  METHOD ChangeStatusHistory.
+  METHOD setInitialValues.
   ENDMETHOD.
 
-  METHOD setInitialValues.
+  METHOD setInitialHistory.
+  ENDMETHOD.
+
+  METHOD validate_dates.
+  ENDMETHOD.
+
+  METHOD validate_mandatory.
+  ENDMETHOD.
+
+  METHOD validate_status_change.
   ENDMETHOD.
 
 ENDCLASS.

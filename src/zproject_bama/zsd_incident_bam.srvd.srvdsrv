@@ -2,6 +2,4 @@
 define service ZSD_INCIDENT_BAM {
   expose ZDD_C_INCIDENT_BAM   as Incidents;
   expose ZDD_C_INCIDENT_H_BAM as History;
-  expose ZDD_STATUS_VH        as Status_VH;
-  expose ZDD_PRIORITY_VH      as Priority_VH;
 }

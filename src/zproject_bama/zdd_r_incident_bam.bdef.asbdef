@@ -13,13 +13,13 @@ authorization master ( global, instance )
   create;
   update;
   delete;
-  //Composición del historial con posibilidad de crear línea
+  //Composición del historial
   association _History { create; with draft; }
 
   //Campos de solo lectura y autoincremental
   field ( numbering : managed, readonly ) IncUuid;
   field ( readonly ) IncidentId,
-  //Status,
+  Status,
   ChangedDate,
   LocalCreatedAt,
   LocalCreatedBy,
@@ -34,31 +34,20 @@ authorization master ( global, instance )
   action ( features : instance, authorization : update ) ChangeStatus
     parameter ZAE_STATUS_BAM result [1] $self;
 
-  //insertar en la tabla de historial el cambio de estatus
-  internal action ChangeStatusHistory;
+  validation validate_mandatory on save { field Title, Description, Priority, Status, CreationDate; }
+  validation validate_status_change on save { field Status; }
+  validation validate_dates on save { field CreationDate, ChangedDate; }
 
-  //  //Validación de campos al momento de crear/actualizar un registro
-  //  validation ValidateStatus on save { create; field Status; }
-  //  validation ValidatePriority on save { create; field Priority; }
-  //  validation ValidateDateRange on save { create; field CreationDate, ChangedDate; }
 
-  //  determination setIncidentID on save { create; }
-  //  determination setStatusToOpen on modify { create; } //values default
-  //  determination calculateStatus on modify { create; field Status; }
+  //NUEVAS validaciones solicitadas
+  //1) Si cambia a IP, debe tener Responsible
+  //validation validate_responsible_on_ip on save { field Status, Responsible; }
 
+  //2) Solo Responsible o Admin pueden cambiar Status
+  //validation validate_who_can_change_status on save { field Status, Responsible; }
+
+  determination setInitialHistory on save { create; }
   determination setInitialValues on modify { create; }
-
-  //  determine action validateStatusCode { validation ValidateStatus; }
-  //  determine action validatePriorityCode { validation ValidatePriority; }
-  //  determine action validateDates { validation ValidateDateRange; }
-
-  //  side effects
-  //  {
-  //    field Status affects field _History.NewStatus;
-  //    determine action validateStatusCode executed on field Status affects messages;
-  //    determine action validatePriorityCode executed on field Priority affects messages;
-  //    determine action validateDates executed on field CreationDate, field ChangedDate affects messages;
-  //  }
 
   draft action Activate optimized;
   draft action Discard;
@@ -67,9 +56,9 @@ authorization master ( global, instance )
 
   draft determine action Prepare
   {
-    //    validation ValidateStatus;
-    //    validation ValidatePriority;
-    //    validation ValidateDateRange;
+    validation validate_mandatory;
+    validation validate_status_change;
+    validation validate_dates;
   }
 
   mapping for zdt_inct_bam
