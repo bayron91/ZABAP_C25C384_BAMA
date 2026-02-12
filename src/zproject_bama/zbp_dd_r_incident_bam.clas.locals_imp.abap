@@ -19,14 +19,14 @@ CLASS lhc_Incident DEFINITION INHERITING FROM cl_abap_behavior_handler.
     METHODS setInitialHistory FOR DETERMINE ON SAVE
       IMPORTING keys FOR Incident~setInitialHistory.
 
-    METHODS validate_dates FOR VALIDATE ON SAVE
-      IMPORTING keys FOR Incident~validate_dates.
+    METHODS validateDates FOR VALIDATE ON SAVE
+      IMPORTING keys FOR Incident~validateDates.
 
-    METHODS validate_mandatory FOR VALIDATE ON SAVE
-      IMPORTING keys FOR Incident~validate_mandatory.
+    METHODS validateMandatory FOR VALIDATE ON SAVE
+      IMPORTING keys FOR Incident~validateMandatory.
 
-    METHODS validate_status_change FOR VALIDATE ON SAVE
-      IMPORTING keys FOR Incident~validate_status_change.
+    METHODS validateStatusChange FOR VALIDATE ON SAVE
+      IMPORTING keys FOR Incident~validateStatusChange.
 
 ENDCLASS.
 
@@ -50,13 +50,13 @@ CLASS lhc_Incident IMPLEMENTATION.
   METHOD setInitialHistory.
   ENDMETHOD.
 
-  METHOD validate_dates.
+  METHOD validateDates.
   ENDMETHOD.
 
-  METHOD validate_mandatory.
+  METHOD validateMandatory.
   ENDMETHOD.
 
-  METHOD validate_status_change.
+  METHOD validateStatusChange.
   ENDMETHOD.
 
 ENDCLASS.

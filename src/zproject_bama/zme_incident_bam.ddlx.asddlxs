@@ -76,8 +76,6 @@ annotate entity ZDD_C_INCIDENT_BAM with
      selectionField: [{ position: 60 }],
      identification: [{ position: 60,
                         label: 'Creation Date' }]}
-  @Consumption.filter: { selectionType: #SINGLE,
-                         defaultValue: 'TODAY' }
   CreationDate;
   @UI: { lineItem: [{ position: 70,
                       importance: #LOW,
@@ -85,8 +83,6 @@ annotate entity ZDD_C_INCIDENT_BAM with
    selectionField: [{ position: 70 }],
    identification: [{ position: 70,
                       label: 'Change Date' }]}
-  @Consumption.filter: { selectionType: #SINGLE,
-                         defaultValue: 'TODAY' }
   ChangedDate;
   @UI.hidden: true
   LocalCreatedBy;

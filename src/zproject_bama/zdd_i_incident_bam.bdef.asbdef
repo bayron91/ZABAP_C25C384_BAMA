@@ -8,9 +8,9 @@ define behavior for ZDD_I_INCIDENT_BAM alias Incident
   use delete;
 
   use action ChangeStatus;
-//  use action validateStatusCode;
-//  use action validatePriorityCode;
-//  use action validateDates;
+  use action validateMandatoryFields;
+  use action validateStatusChangeFields;
+  use action validateDatesFields;
 
   use action Activate;
   use action Discard;
