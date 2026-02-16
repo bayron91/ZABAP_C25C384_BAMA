@@ -2,16 +2,13 @@ projection;
 strict ( 2 );
 use draft;
 
-define behavior for ZDD_C_INCIDENT_BAM //alias <alias_name>
+define behavior for ZDD_C_INCIDENT_BAM alias Incident
 {
   use create;
   use update;
   use delete;
 
   use action ChangeStatus;
-  use action validateMandatoryFields;
-  use action validateStatusChangeFields;
-  use action validateDatesFields;
 
   use action Activate;
   use action Discard;
@@ -22,7 +19,7 @@ define behavior for ZDD_C_INCIDENT_BAM //alias <alias_name>
   use association _History { create; with draft; }
 }
 
-define behavior for ZDD_C_INCIDENT_H_BAM //alias <alias_name>
+define behavior for ZDD_C_INCIDENT_H_BAM alias History
 {
   use update;
   use delete;

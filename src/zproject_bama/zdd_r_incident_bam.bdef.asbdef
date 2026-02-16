@@ -5,19 +5,16 @@ with draft;
 define behavior for ZDD_R_INCIDENT_BAM alias Incident
 persistent table zdt_inct_bam
 draft table zdt_inct_d_bam
-lock master
-total etag LastChangedAt
 etag master LocalLastChangedAt
+lock master total etag LastChangedAt
 authorization master ( global, instance )
 {
   create;
   update;
   delete;
-  //Composición del historial
-  association _History { create; with draft; }
 
-  //Campos de solo lectura y autoincremental
-  field ( numbering : managed, readonly ) IncUuid;
+  association _History { create ( features : instance ); with draft; }
+
   field ( readonly ) IncidentId,
   Status,
   ChangedDate,
@@ -27,56 +24,30 @@ authorization master ( global, instance )
   LocalLastChangedAt,
   LastChangedAt;
 
-  //Campos obligatorios
+  field ( numbering : managed, readonly ) IncUuid;
+
   field ( mandatory ) Title, Description, Priority;
 
-  //  //Caracteristica dinamica sobre status para validar si se pueden cambiar o no
-  //  field ( features : instance ) Status;
-
-  //definición accion botón status
   action ( features : instance, authorization : update ) ChangeStatus
     parameter ZAE_STATUS_BAM result [1] $self;
 
-  //accion interna para refrescar en la pantalla el cambio del estatus
-  //  internal action defineNewStatus;
+  side effects { action ChangeStatus affects $self; }
 
-  validation validateMandatory on save { create; field Title, Description, Priority, Status, CreationDate; }
-  validation validateStatusChange on save { create; field Status; }
-  validation validateDates on save { create; field CreationDate, ChangedDate; }
+  internal action setHistory;
 
+  validation validatePriority on save { create; update; field Priority; }
 
-  //NUEVAS validaciones solicitadas
-  //1) Si cambia a IP, debe tener Responsible
-  //validation validate_responsible_on_ip on save { field Status, Responsible; }
-
-  //2) Solo Responsible o Admin pueden cambiar Status
-  //validation validate_who_can_change_status on save { field Status, Responsible; }
-
-  determination setInitialValues on modify { create; }
   determination setInitialHistory on save { create; }
+  determination setInitialValues on modify { create; }
 
-  determine action validateMandatoryFields { validation validateMandatory; }
-  determine action validateStatusChangeFields { validation validateStatusChange; }
-  determine action validateDatesFields { validation validateDates; }
-
-  side effects
-  {
-    determine action validateMandatoryFields executed on field Title, field Description, field Priority,
-        field Status, field CreationDate affects messages;
-    determine action validateStatusChangeFields executed on field Status affects messages;
-    determine action validateDatesFields executed on field CreationDate, field ChangedDate affects messages;
-  }
 
   draft action Activate optimized;
   draft action Discard;
   draft action Edit;
   draft action Resume;
-
   draft determine action Prepare
   {
-    validation validateMandatory;
-    validation validateStatusChange;
-    validation validateDates;
+    validation validatePriority;
   }
 
   mapping for zdt_inct_bam
@@ -99,6 +70,7 @@ authorization master ( global, instance )
 
 
 define behavior for ZDD_INCIDENT_H_BAM alias History
+implementation in class zbp_dd_incident_h_bam unique
 persistent table zdt_inct_h_bam
 draft table zdt_inct_h_d_bam
 lock dependent by _Incident
@@ -107,6 +79,7 @@ authorization dependent by _Incident
 {
   update;
   delete;
+
   association _Incident { with draft; }
 
   field ( numbering : managed, readonly ) HisUuid;
