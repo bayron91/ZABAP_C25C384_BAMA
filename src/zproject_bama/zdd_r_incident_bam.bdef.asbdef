@@ -36,6 +36,10 @@ authorization master ( global, instance )
   internal action setHistory;
 
   validation validatePriority on save { create; update; field Priority; }
+  validation validateDates on save { create; field CreationDate; }
+
+  //  validation validateCreation on save { create; field CreationDate; }
+  //  validation validateUpdate on save { update; field ChangedDate; }
 
   determination setInitialHistory on save { create; }
   determination setInitialValues on modify { create; }
@@ -48,6 +52,10 @@ authorization master ( global, instance )
   draft determine action Prepare
   {
     validation validatePriority;
+    validation validateDates;
+
+    //    validation validateCreation;
+    //    validation validateUpdate;
   }
 
   mapping for zdt_inct_bam

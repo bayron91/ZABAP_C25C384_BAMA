@@ -37,6 +37,9 @@ CLASS lhc_Incident DEFINITION INHERITING FROM cl_abap_behavior_handler.
     METHODS validatePriority FOR VALIDATE ON SAVE
       IMPORTING keys FOR Incident~validatePriority.
 
+    METHODS validateDates FOR VALIDATE ON SAVE
+      IMPORTING keys FOR Incident~validateDates.
+
 ENDCLASS.
 
 CLASS lhc_Incident IMPLEMENTATION.
@@ -136,8 +139,10 @@ CLASS lhc_Incident IMPLEMENTATION.
   METHOD ChangeStatus.
 
     DATA: new_status       TYPE zde_status_bam,
+          flag_status      TYPE abap_bool,
           incidents_update TYPE TABLE FOR UPDATE zdd_r_incident_bam\\Incident.
-*          lt_test2 TYPE TABLE FOR UPDATE zdd_r_incident_bam\\History
+
+    DATA(lv_technical_user) = cl_abap_context_info=>get_user_technical_name(  ).
 
     READ ENTITIES OF zdd_r_incident_bam IN LOCAL MODE
         ENTITY Incident
@@ -146,20 +151,41 @@ CLASS lhc_Incident IMPLEMENTATION.
         RESULT DATA(incidents).
 
     LOOP AT incidents ASSIGNING FIELD-SYMBOL(<incident>).
+      CLEAR flag_status.
+
+      IF lv_technical_user NE admin_user.
+        flag_status = abap_true.
+
+        APPEND VALUE #( %tky = <incident>-%tky ) TO failed-incident.
+        APPEND VALUE #( %tky = <incident>-%tky
+                        %msg = NEW zcx_incidents_bam( textid   = zcx_incidents_bam=>user_unauthorized
+                                                      attr1    = lv_technical_user
+                                                      severity = if_abap_behv_message=>severity-error ) ) to reported-incident.
+      ENDIF.
+
       new_status = keys[ KEY id %tky = <incident>-%tky ]-%param-StatusCode.
 
-      IF new_status IS NOT INITIAL.
+      IF ( new_status EQ incident_status-completed OR new_status EQ incident_status-closed ) AND
+           <incident>-Status EQ incident_status-pending.
+        flag_status = abap_true.
+
+        APPEND VALUE #( %tky = <incident>-%tky ) TO failed-incident.
+      ENDIF.
+
+      IF new_status IS NOT INITIAL AND flag_status EQ abap_false.
         APPEND VALUE #( %tky = <incident>-%tky
                         Status = new_status
                         ChangedDate = cl_abap_context_info=>get_system_date(  ) ) TO incidents_update.
       ENDIF.
     ENDLOOP.
 
-    MODIFY ENTITIES OF zdd_r_incident_bam IN LOCAL MODE
-        ENTITY Incident
-        UPDATE
-        FIELDS ( Status ChangedDate )
-        WITH CORRESPONDING #( incidents_update ).
+    IF  incidents_update IS NOT INITIAL.
+      MODIFY ENTITIES OF zdd_r_incident_bam IN LOCAL MODE
+          ENTITY Incident
+          UPDATE
+          FIELDS ( Status ChangedDate )
+          WITH CORRESPONDING #( incidents_update ).
+    ENDIF.
 
     READ ENTITIES OF zdd_r_incident_bam IN LOCAL MODE
         ENTITY Incident
@@ -276,6 +302,26 @@ CLASS lhc_Incident IMPLEMENTATION.
       IF incident-Priority IS INITIAL.
         APPEND VALUE #( %tky = incident-%tky ) TO failed-incident.
       ELSEIF incident-Priority IS NOT INITIAL AND NOT line_exists( valid_priorities[ priority_code = incident-Priority ] ).
+        APPEND VALUE #( %tky = incident-%tky ) TO failed-incident.
+      ENDIF.
+    ENDLOOP.
+
+  ENDMETHOD.
+
+  METHOD validateDates.
+
+    READ ENTITIES OF zdd_r_incident_bam IN LOCAL MODE
+        ENTITY Incident
+        FIELDS ( CreationDate ChangedDate )
+        WITH CORRESPONDING #( keys )
+        RESULT DATA(incidents).
+
+    LOOP AT incidents INTO DATA(incident).
+      IF incident-CreationDate IS INITIAL.
+        APPEND VALUE #( %tky = incident-%tky ) TO failed-incident.
+      ENDIF.
+
+      IF incident-CreationDate > cl_abap_context_info=>get_system_date(  ) AND incident-CreationDate IS NOT INITIAL.
         APPEND VALUE #( %tky = incident-%tky ) TO failed-incident.
       ENDIF.
     ENDLOOP.
