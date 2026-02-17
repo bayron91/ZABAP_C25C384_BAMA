@@ -20,6 +20,36 @@
      <MSGNR>001</MSGNR>
      <TEXT>User &amp;1 unauthorized</TEXT>
     </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMSG_INCIDENT_BAM</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>Invalid change status from &amp;1 to &amp;2</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMSG_INCIDENT_BAM</ARBGB>
+     <MSGNR>003</MSGNR>
+     <TEXT>Enter a priority</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMSG_INCIDENT_BAM</ARBGB>
+     <MSGNR>004</MSGNR>
+     <TEXT>Priority &amp;1 is unknown</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMSG_INCIDENT_BAM</ARBGB>
+     <MSGNR>005</MSGNR>
+     <TEXT>Enter a creation date</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMSG_INCIDENT_BAM</ARBGB>
+     <MSGNR>006</MSGNR>
+     <TEXT>Creation date &amp;1 must be on or before system date</TEXT>
+    </T100>
    </T100>
   </asx:values>
  </asx:abap>

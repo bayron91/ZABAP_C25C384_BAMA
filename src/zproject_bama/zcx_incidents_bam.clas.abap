@@ -17,7 +17,52 @@ CLASS zcx_incidents_bam DEFINITION
         attr2 TYPE scx_attrname VALUE '',
         attr3 TYPE scx_attrname VALUE '',
         attr4 TYPE scx_attrname VALUE '',
-      END OF user_unauthorized.
+      END OF user_unauthorized,
+
+      BEGIN OF change_status_pe,
+        msgid TYPE symsgid VALUE 'ZMSG_INCIDENT_BAM',
+        msgno TYPE symsgno VALUE '002',
+        attr1 TYPE scx_attrname VALUE 'MV_ATTR1',
+        attr2 TYPE scx_attrname VALUE 'MV_ATTR2',
+        attr3 TYPE scx_attrname VALUE '',
+        attr4 TYPE scx_attrname VALUE '',
+      END OF change_status_pe,
+
+      BEGIN OF enter_priority,
+        msgid TYPE symsgid VALUE 'ZMSG_INCIDENT_BAM',
+        msgno TYPE symsgno VALUE '003',
+        attr1 TYPE scx_attrname VALUE '',
+        attr2 TYPE scx_attrname VALUE '',
+        attr3 TYPE scx_attrname VALUE '',
+        attr4 TYPE scx_attrname VALUE '',
+      END OF enter_priority,
+
+      BEGIN OF priority_unknown,
+        msgid TYPE symsgid VALUE 'ZMSG_INCIDENT_BAM',
+        msgno TYPE symsgno VALUE '004',
+        attr1 TYPE scx_attrname VALUE 'MV_ATTR1',
+        attr2 TYPE scx_attrname VALUE '',
+        attr3 TYPE scx_attrname VALUE '',
+        attr4 TYPE scx_attrname VALUE '',
+      END OF priority_unknown,
+
+      BEGIN OF enter_creationdate,
+        msgid TYPE symsgid VALUE 'ZMSG_INCIDENT_BAM',
+        msgno TYPE symsgno VALUE '005',
+        attr1 TYPE scx_attrname VALUE '',
+        attr2 TYPE scx_attrname VALUE '',
+        attr3 TYPE scx_attrname VALUE '',
+        attr4 TYPE scx_attrname VALUE '',
+      END OF enter_creationdate,
+
+      BEGIN OF creationdate_bef_sydate,
+        msgid TYPE symsgid VALUE 'ZMSG_INCIDENT_BAM',
+        msgno TYPE symsgno VALUE '006',
+        attr1 TYPE scx_attrname VALUE 'MV_ATTR1',
+        attr2 TYPE scx_attrname VALUE '',
+        attr3 TYPE scx_attrname VALUE '',
+        attr4 TYPE scx_attrname VALUE '',
+      END OF creationdate_bef_sydate.
 
     METHODS constructor
       IMPORTING

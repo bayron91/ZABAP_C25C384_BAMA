@@ -160,7 +160,7 @@ CLASS lhc_Incident IMPLEMENTATION.
         APPEND VALUE #( %tky = <incident>-%tky
                         %msg = NEW zcx_incidents_bam( textid   = zcx_incidents_bam=>user_unauthorized
                                                       attr1    = lv_technical_user
-                                                      severity = if_abap_behv_message=>severity-error ) ) to reported-incident.
+                                                      severity = if_abap_behv_message=>severity-error ) ) TO reported-incident.
       ENDIF.
 
       new_status = keys[ KEY id %tky = <incident>-%tky ]-%param-StatusCode.
@@ -170,6 +170,11 @@ CLASS lhc_Incident IMPLEMENTATION.
         flag_status = abap_true.
 
         APPEND VALUE #( %tky = <incident>-%tky ) TO failed-incident.
+        APPEND VALUE #( %tky = <incident>-%tky
+                        %msg = NEW zcx_incidents_bam( textid   = zcx_incidents_bam=>change_status_pe
+                                                      attr1    = CONV string( <incident>-Status )
+                                                      attr2    = CONV string( new_status )
+                                                      severity = if_abap_behv_message=>severity-error ) ) TO reported-incident.
       ENDIF.
 
       IF new_status IS NOT INITIAL AND flag_status EQ abap_false.
@@ -276,6 +281,7 @@ CLASS lhc_Incident IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD setHistory.
+
   ENDMETHOD.
 
   METHOD validatePriority.
@@ -301,8 +307,17 @@ CLASS lhc_Incident IMPLEMENTATION.
     LOOP AT incidents INTO DATA(incident).
       IF incident-Priority IS INITIAL.
         APPEND VALUE #( %tky = incident-%tky ) TO failed-incident.
+        APPEND VALUE #( %tky = incident-%tky
+                        %msg = NEW zcx_incidents_bam( textid   = zcx_incidents_bam=>enter_priority
+                                                      severity = if_abap_behv_message=>severity-error )
+                        %element-priority = if_abap_behv=>mk-on ) TO reported-incident.
       ELSEIF incident-Priority IS NOT INITIAL AND NOT line_exists( valid_priorities[ priority_code = incident-Priority ] ).
         APPEND VALUE #( %tky = incident-%tky ) TO failed-incident.
+        APPEND VALUE #( %tky = incident-%tky
+                        %msg = NEW zcx_incidents_bam( textid   = zcx_incidents_bam=>priority_unknown
+                                                      attr1    = CONV string( incident-Priority )
+                                                      severity = if_abap_behv_message=>severity-error )
+                        %element-priority = if_abap_behv=>mk-on ) TO reported-incident.
       ENDIF.
     ENDLOOP.
 
@@ -319,10 +334,19 @@ CLASS lhc_Incident IMPLEMENTATION.
     LOOP AT incidents INTO DATA(incident).
       IF incident-CreationDate IS INITIAL.
         APPEND VALUE #( %tky = incident-%tky ) TO failed-incident.
+        APPEND VALUE #( %tky = incident-%tky
+                        %msg = NEW zcx_incidents_bam( textid   = zcx_incidents_bam=>enter_creationdate
+                                                      severity = if_abap_behv_message=>severity-error )
+                        %element-creationdate = if_abap_behv=>mk-on ) TO reported-incident.
       ENDIF.
 
       IF incident-CreationDate > cl_abap_context_info=>get_system_date(  ) AND incident-CreationDate IS NOT INITIAL.
         APPEND VALUE #( %tky = incident-%tky ) TO failed-incident.
+        APPEND VALUE #( %tky = incident-%tky
+                        %msg = NEW zcx_incidents_bam( textid   = zcx_incidents_bam=>creationdate_bef_sydate
+                                                      attr1    = CONV string( incident-CreationDate )
+                                                      severity = if_abap_behv_message=>severity-error )
+                        %element-creationdate = if_abap_behv=>mk-on ) TO reported-incident.
       ENDIF.
     ENDLOOP.
 
