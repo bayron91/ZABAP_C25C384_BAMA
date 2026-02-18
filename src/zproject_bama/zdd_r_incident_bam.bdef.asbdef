@@ -35,15 +35,11 @@ authorization master ( global, instance )
 
   internal action setHistory;
 
-  validation validatePriority on save { create; update; field Priority; }
-  validation validateDates on save { create; field CreationDate; }
-
-  //  validation validateCreation on save { create; field CreationDate; }
-  //  validation validateUpdate on save { update; field ChangedDate; }
-
   determination setInitialHistory on save { create; }
   determination setInitialValues on modify { create; }
 
+  validation validatePriority on save { create; update; field Priority; }
+  validation validateDates on save { create; field CreationDate; }
 
   draft action Activate optimized;
   draft action Discard;
@@ -53,9 +49,6 @@ authorization master ( global, instance )
   {
     validation validatePriority;
     validation validateDates;
-
-    //    validation validateCreation;
-    //    validation validateUpdate;
   }
 
   mapping for zdt_inct_bam
@@ -78,7 +71,7 @@ authorization master ( global, instance )
 
 
 define behavior for ZDD_INCIDENT_H_BAM alias History
-implementation in class zbp_dd_incident_h_bam unique
+//implementation in class zbp_dd_incident_h_bam unique
 persistent table zdt_inct_h_bam
 draft table zdt_inct_h_d_bam
 lock dependent by _Incident

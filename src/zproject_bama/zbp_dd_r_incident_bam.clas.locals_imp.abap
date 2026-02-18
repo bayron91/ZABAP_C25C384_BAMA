@@ -1,15 +1,14 @@
 CLASS lhc_Incident DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
 
-    CONSTANTS:
-      BEGIN OF incident_status,
-        open        TYPE c LENGTH 2 VALUE 'OP', "Open
-        in_progress TYPE c LENGTH 2 VALUE 'IP', "In Progress
-        pending     TYPE c LENGTH 2 VALUE 'PE', "Pending
-        completed   TYPE c LENGTH 2 VALUE 'CO', "Completed
-        closed      TYPE c LENGTH 2 VALUE 'CL', "Closed
-        canceled    TYPE c LENGTH 2 VALUE 'CN', "Canceled
-      END OF incident_status.
+    CONSTANTS: BEGIN OF incident_status,
+                 open        TYPE c LENGTH 2 VALUE 'OP', "Open
+                 in_progress TYPE c LENGTH 2 VALUE 'IP', "In Progress
+                 pending     TYPE c LENGTH 2 VALUE 'PE', "Pending
+                 completed   TYPE c LENGTH 2 VALUE 'CO', "Completed
+                 closed      TYPE c LENGTH 2 VALUE 'CL', "Closed
+                 canceled    TYPE c LENGTH 2 VALUE 'CN', "Canceled
+               END OF incident_status.
 
     CONSTANTS admin_user TYPE string VALUE 'CB9980001799'.
 
@@ -31,14 +30,14 @@ CLASS lhc_Incident DEFINITION INHERITING FROM cl_abap_behavior_handler.
     METHODS setInitialHistory FOR DETERMINE ON SAVE
       IMPORTING keys FOR Incident~setInitialHistory.
 
-    METHODS setHistory FOR MODIFY
-      IMPORTING keys FOR ACTION Incident~setHistory.
-
     METHODS validatePriority FOR VALIDATE ON SAVE
       IMPORTING keys FOR Incident~validatePriority.
 
     METHODS validateDates FOR VALIDATE ON SAVE
       IMPORTING keys FOR Incident~validateDates.
+
+    METHODS setHistory FOR MODIFY
+      IMPORTING keys FOR ACTION Incident~setHistory.
 
 ENDCLASS.
 
@@ -139,8 +138,12 @@ CLASS lhc_Incident IMPLEMENTATION.
   METHOD ChangeStatus.
 
     DATA: new_status       TYPE zde_status_bam,
+          text_status      TYPE c LENGTH 80,
           flag_status      TYPE abap_bool,
-          incidents_update TYPE TABLE FOR UPDATE zdd_r_incident_bam\\Incident.
+          lv_max_hisid     TYPE n LENGTH 8,
+          incidents_update TYPE TABLE FOR UPDATE zdd_r_incident_bam,
+          ls_history       TYPE zdt_inct_h_bam,
+          lt_history       TYPE TABLE FOR CREATE zdd_r_incident_bam\_History.
 
     DATA(lv_technical_user) = cl_abap_context_info=>get_user_technical_name(  ).
 
@@ -148,11 +151,13 @@ CLASS lhc_Incident IMPLEMENTATION.
         ENTITY Incident
         FIELDS ( Status ChangedDate )
         WITH CORRESPONDING #( keys )
-        RESULT DATA(incidents).
+        RESULT DATA(incidents)
+        FAILED failed.
 
     LOOP AT incidents ASSIGNING FIELD-SYMBOL(<incident>).
       CLEAR flag_status.
 
+      "Valida authorization user
       IF lv_technical_user NE admin_user.
         flag_status = abap_true.
 
@@ -160,11 +165,14 @@ CLASS lhc_Incident IMPLEMENTATION.
         APPEND VALUE #( %tky = <incident>-%tky
                         %msg = NEW zcx_incidents_bam( textid   = zcx_incidents_bam=>user_unauthorized
                                                       attr1    = lv_technical_user
-                                                      severity = if_abap_behv_message=>severity-error ) ) TO reported-incident.
+                                                      severity = if_abap_behv_message=>severity-error )
+                        %op-%action-changestatus = if_abap_behv=>mk-on ) TO reported-incident.
+        EXIT.
       ENDIF.
 
       new_status = keys[ KEY id %tky = <incident>-%tky ]-%param-StatusCode.
 
+      "Validate is possible change status
       IF ( new_status EQ incident_status-completed OR new_status EQ incident_status-closed ) AND
            <incident>-Status EQ incident_status-pending.
         flag_status = abap_true.
@@ -174,23 +182,85 @@ CLASS lhc_Incident IMPLEMENTATION.
                         %msg = NEW zcx_incidents_bam( textid   = zcx_incidents_bam=>change_status_pe
                                                       attr1    = CONV string( <incident>-Status )
                                                       attr2    = CONV string( new_status )
-                                                      severity = if_abap_behv_message=>severity-error ) ) TO reported-incident.
+                                                      severity = if_abap_behv_message=>severity-error )
+                        %op-%action-changestatus = if_abap_behv=>mk-on ) TO reported-incident.
+        EXIT.
       ENDIF.
 
       IF new_status IS NOT INITIAL AND flag_status EQ abap_false.
-        APPEND VALUE #( %tky = <incident>-%tky
-                        Status = new_status
-                        ChangedDate = cl_abap_context_info=>get_system_date(  ) ) TO incidents_update.
+        APPEND VALUE #( %tky        = <incident>-%tky
+                        Status      = new_status
+                        ChangedDate = cl_abap_context_info=>get_system_date( ) ) TO incidents_update.
       ENDIF.
+
+      text_status = keys[ KEY id %tky = <incident>-%tky ]-%param-Observation.
+
+      "Get id history
+      SELECT FROM zdt_inct_h_bam
+          FIELDS MAX( his_id )
+          WHERE his_uuid IS NOT INITIAL
+            AND inc_uuid = @<incident>-IncUuid
+          INTO @lv_max_hisid.
+
+      IF sy-subrc EQ 0.
+        lv_max_hisid = lv_max_hisid + 1.
+      ELSE.
+        lv_max_hisid = 1.
+      ENDIF.
+
+      ls_history-his_id = lv_max_hisid.
+      ls_history-previous_status = <incident>-Status.
+      ls_history-new_status = new_status.
+      ls_history-text = text_status.
+
+      TRY.
+          ls_history-inc_uuid = cl_system_uuid=>create_uuid_x16_static( ).
+        CATCH cx_uuid_error INTO DATA(lx_error).
+          lx_error->get_text( ).
+      ENDTRY.
+
+      APPEND VALUE #( %tky    = <incident>-%tky
+                      %target = VALUE #( ( HisUuid        = ls_history-inc_uuid
+                                           IncUuid        = <incident>-IncUuid
+                                           HisId          = ls_history-his_id
+                                           PreviousStatus = ls_history-previous_status
+                                           NewStatus      = ls_history-new_status
+                                           Text           = ls_history-text ) ) ) TO lt_history.
     ENDLOOP.
+    UNASSIGN <incident>.
+
+    CHECK flag_status EQ abap_false.
 
     IF  incidents_update IS NOT INITIAL.
       MODIFY ENTITIES OF zdd_r_incident_bam IN LOCAL MODE
           ENTITY Incident
           UPDATE
           FIELDS ( Status ChangedDate )
-          WITH CORRESPONDING #( incidents_update ).
+          WITH incidents_update.
     ENDIF.
+    FREE incidents.
+
+    IF lt_history IS NOT INITIAL.
+      MODIFY ENTITIES OF zdd_r_incident_bam IN LOCAL MODE
+          ENTITY Incident
+          CREATE BY \_History FIELDS ( HisUuid
+                                       IncUuid
+                                       HisId
+                                       PreviousStatus
+                                       NewStatus
+                                       Text )
+            AUTO FILL CID
+            WITH lt_history
+          MAPPED mapped
+          FAILED failed
+          REPORTED reported.
+    ENDIF.
+
+*    READ ENTITIES OF zdd_r_incident_bam IN LOCAL MODE
+*        ENTITY Incident BY \_History
+*        ALL FIELDS
+*        WITH CORRESPONDING #( keys )
+*        RESULT DATA(incidents_change_history).
 
     READ ENTITIES OF zdd_r_incident_bam IN LOCAL MODE
         ENTITY Incident
@@ -198,7 +268,7 @@ CLASS lhc_Incident IMPLEMENTATION.
         WITH CORRESPONDING #( keys )
         RESULT DATA(incidents_with_change_status).
 
-    result = VALUE #( FOR incident IN incidents_with_change_status ( %tky = incident-%tky
+    result = VALUE #( FOR incident IN incidents_with_change_status ( %tky   = incident-%tky
                                                                      %param = incident ) ).
 
   ENDMETHOD.
@@ -207,7 +277,7 @@ CLASS lhc_Incident IMPLEMENTATION.
 
     READ ENTITIES OF zdd_r_incident_bam IN LOCAL MODE
         ENTITY Incident
-        FIELDS ( IncidentId Status )
+        FIELDS ( IncidentId Status CreationDate )
         WITH CORRESPONDING #( keys )
         RESULT DATA(incidents).
 
@@ -215,72 +285,33 @@ CLASS lhc_Incident IMPLEMENTATION.
       "Get last incident id
       SELECT FROM zdt_inct_bam
         FIELDS MAX( incident_id )
+        WHERE incident_id IS NOT INITIAL
         INTO @DATA(lv_incident_id).
 
-      IF sy-subrc EQ 0.
-        lv_incident_id += 1.
+      IF lv_incident_id IS INITIAL.
+        lv_incident_id = 1.
       ELSE.
-        CLEAR lv_incident_id.
+        lv_incident_id += 1.
       ENDIF.
 
       MODIFY ENTITIES OF zdd_r_incident_bam IN LOCAL MODE
           ENTITY Incident
           UPDATE
-          FIELDS ( IncidentId Status )
+          FIELDS ( IncidentId Status CreationDate )
           WITH VALUE #( FOR incident IN incidents ( %tky = incident-%tky
                                                     IncidentId = lv_incident_id
-                                                    Status = 'OP' ) ).
+                                                    Status = incident_status-open
+                                                    CreationDate = cl_abap_context_info=>get_system_date( ) ) ).
     ENDIF.
 
   ENDMETHOD.
 
   METHOD setInitialHistory.
 
-*    DATA: histories_create TYPE TABLE FOR CREATE zdd_r_incident_bam\_History.
-*          history_create   LIKE LINE OF histories_create.
-
-*    READ ENTITIES OF zdd_r_incident_bam IN LOCAL MODE
-*        ENTITY Incident
-*        ALL FIELDS
-*        WITH CORRESPONDING #( keys )
-*        RESULT DATA(incidents).
-
-*    LOOP AT incidents INTO DATA(incident).
-*      IF incident-IncUuid IS INITIAL.
-*        CONTINUE.
-*      ENDIF.
-*
-*      CLEAR history_create.
-*
-*      history_create-%key = incident-%key.
-*
-*      APPEND VALUE #( HisId          = 1
-*                      NewStatus      = incident-Status "incident_status-open
-*                      PreviousStatus = ''
-*                      Text           = 'First Incident' ) TO history_create-%target.
-*
-*      APPEND history_create TO histories_create.
-*    ENDLOOP.
-
-*    LOOP AT keys INTO DATA(key).
-*
-*      APPEND VALUE #( %key    = key-%key
-*                      %target = VALUE #( ( HisId          = 1
-*                                           NewStatus      = incident_status-open
-*                                           PreviousStatus = ''
-*                                           Text           = 'First Incident' ) ) ) TO histories_create.
-*    ENDLOOP.
-
-*    IF histories_create IS NOT INITIAL.
-*      MODIFY ENTITIES OF zdd_r_incident_bam IN LOCAL MODE
-*          ENTITY Incident
-*          CREATE BY \_History
-*          FROM histories_create.
-*    ENDIF.
-
-  ENDMETHOD.
-
-  METHOD setHistory.
+    MODIFY ENTITIES OF zdd_r_incident_bam IN LOCAL MODE
+        ENTITY Incident
+        EXECUTE setHistory
+        FROM CORRESPONDING #( keys ).
 
   ENDMETHOD.
 
@@ -349,6 +380,66 @@ CLASS lhc_Incident IMPLEMENTATION.
                         %element-creationdate = if_abap_behv=>mk-on ) TO reported-incident.
       ENDIF.
     ENDLOOP.
+
+  ENDMETHOD.
+
+  METHOD setHistory.
+
+    DATA: lv_max_hisid TYPE n LENGTH 8,
+          ls_history   TYPE zdt_inct_h_bam,
+          lt_history   TYPE TABLE FOR CREATE zdd_r_incident_bam\_History.
+
+    READ ENTITIES OF zdd_r_incident_bam IN LOCAL MODE
+        ENTITY Incident
+        ALL FIELDS
+        WITH CORRESPONDING #( keys )
+        RESULT DATA(incidents).
+
+    LOOP AT incidents ASSIGNING FIELD-SYMBOL(<incident>).
+      "Get id history
+      SELECT FROM zdt_inct_h_bam
+          FIELDS MAX( his_id )
+          WHERE his_uuid IS NOT INITIAL
+            AND inc_uuid = @<incident>-IncUuid
+          INTO @lv_max_hisid.
+
+      IF sy-subrc EQ 0.
+        ls_history-his_id = lv_max_hisid + 1.
+      ELSE.
+        ls_history-his_id = 1.
+      ENDIF.
+
+      TRY.
+          ls_history-inc_uuid = cl_system_uuid=>create_uuid_x16_static( ).
+        CATCH cx_uuid_error INTO DATA(lx_error).
+          lx_error->get_text( ).
+      ENDTRY.
+
+      APPEND VALUE #( %tky    = <incident>-%tky
+                      %target = VALUE #( ( HisUuid   = ls_history-inc_uuid
+                                           IncUuid   = <incident>-IncUuid
+                                           HisId     = ls_history-his_id
+                                           NewStatus = incident_status-open
+                                           Text      = 'First Incident' ) ) ) TO lt_history.
+    ENDLOOP.
+
+    UNASSIGN <incident>.
+    FREE incidents.
+
+    IF lt_history IS NOT INITIAL.
+      MODIFY ENTITIES OF zdd_r_incident_bam IN LOCAL MODE
+          ENTITY Incident
+          CREATE BY \_History FIELDS ( HisUuid
+                                       IncUuid
+                                       HisId
+                                       NewStatus
+                                       Text )
+            AUTO FILL CID
+            WITH lt_history
+          MAPPED mapped
+          FAILED failed
+          REPORTED reported.
+    ENDIF.
 
   ENDMETHOD.
 
